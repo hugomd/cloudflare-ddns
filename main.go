@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	Cloudflare "github.com/hugomd/ddns/lib"
+	Cloudflare "github.com/hugomd/cloudflare-ddns/lib"
 	"io/ioutil"
 	"log"
 	"net/http"

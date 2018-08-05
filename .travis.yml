@@ -1,0 +1,18 @@
+sudo: required
+
+services:
+  - docker
+
+env:
+  global:
+    - IMAGE_NAME=hugomd/cloudflare-ddns
+    - VERSION=$TRAVIS_TAG
+
+script:
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+  - docker build . -t "$IMAGE_NAME"
+  - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
+  - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${version}"
+  on:
+    branch: master
+    tags: true
