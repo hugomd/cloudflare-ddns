@@ -6,7 +6,7 @@ services:
 
 env:
   global:
-    - IMAGE_NAME=cloudflare-ddns
+    - IMAGE_NAME=hugomd/cloudflare-ddns
     - VERSION=$TRAVIS_TAG
 
 script:
@@ -15,7 +15,7 @@ script:
 
 deploy:
   provider: script
-  script: docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest" && docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${version}" && docker push hugomd:$IMAGE_NAME
+  script: docker tag $IMAGE_NAME $IMAGE_NAME:latest" && docker tag $IMAGE_NAME "$IMAGE_NAME:$VERSION" && docker push "$IMAGE_NAME"
   on:
     branch: master
     tags: true
