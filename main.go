@@ -83,15 +83,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	log.Printf("IP is %s", ip)
 
 	if record == (Cloudflare.Record{}) {
 		panic("Host not found")
 	}
 
-	record.Content = ip
-
-	err = api.UpdateDNSRecord(record, zone)
-	if err != nil {
-		panic(err)
+	if ip != record.Content {
+		record.Content = ip
+		err = api.UpdateDNSRecord(record, zone)
+		if err != nil {
+			panic(err)
+		}
+		log.Printf("Updated IP to %s", ip)
+	} else {
+		log.Print("No change in IP, not updating record")
 	}
+
 }
