@@ -1,4 +1,5 @@
 sudo: required
+language: go
 
 services:
   - docker
@@ -9,10 +10,14 @@ env:
     - VERSION=$TRAVIS_TAG
 
 script:
-  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
-  - docker build . -t "$IMAGE_NAME"
+- echo "$REGISTRY_PASS" | docker login -u "$REGISTRY_USER" --password-stdin
+- docker build . -t "$IMAGE_NAME"
+
+deploy:
+  script:
   - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
   - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${version}"
+  - docker push $IMAGE_NAME
   on:
     branch: master
     tags: true
