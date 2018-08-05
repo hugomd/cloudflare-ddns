@@ -14,6 +14,7 @@ script:
 - docker build . -t "$IMAGE_NAME"
 
 deploy:
+  provider: script
   script:
   - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
   - docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${version}"
