@@ -15,7 +15,7 @@ script:
 
 deploy:
   provider: script
-  script: docker tag $IMAGE_NAME $IMAGE_NAME:latest" && docker tag $IMAGE_NAME "$IMAGE_NAME:$VERSION" && docker push "$IMAGE_NAME"
+  script: docker tag $IMAGE_NAME "$IMAGE_NAME:latest" && docker tag $IMAGE_NAME "$IMAGE_NAME:$VERSION" && docker push "$IMAGE_NAME"
   on:
     branch: master
     tags: true
