@@ -20,7 +20,6 @@ docker run \
 |--------------------------------------|------------------------------------------------------|
 | [Cloudflare](https://cloudflare.com) | `cloudflare`                                         |
 
-
 # Environment Variables
 
 All providers require the following environment variable:
@@ -40,10 +39,14 @@ All providers require the following environment variable:
 
 # Contributing
 
-* Fork this repository 🍴
-* Make your changes
-* Open a pull request and ask for review
-* 🎉
+## Adding a new provider
+
+To add a new provider:
+1. Create a new folder in [`lib/providers`](https://github.com/hugomd/cloudflare-ddns/tree/master/lib/providers), called `your_provider`
+2. Create a package for your provider in the previously created folder, `your_provider`.
+3. Ensure your provider implements the `Provider` interface
+4. Import your provider in [`lib/providers/_all/all.go`](https://github.com/hugomd/cloudflare-ddns/blob/master/lib/providers/_all/all.go)
+5. Open a PR 🎉
 
 # License
 
