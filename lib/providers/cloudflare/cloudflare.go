@@ -17,22 +17,22 @@ func init() {
 var ZONE, HOST string
 
 func NewProvider() (providers.Provider, error) {
-	APIKEY := os.Getenv("APIKEY")
+	APIKEY := os.Getenv("CLOUDFLARE_APIKEY")
 	if APIKEY == "" {
 		log.Fatal("APIKEY env. variable is required")
 	}
 
-	ZONE = os.Getenv("ZONE")
+	ZONE = os.Getenv("CLOUDFLARE_ZONE")
 	if APIKEY == "" {
 		log.Fatal("ZONE env. variable is required")
 	}
 
-	HOST = os.Getenv("HOST")
+	HOST = os.Getenv("CLOUDFLARE_HOST")
 	if HOST == "" {
 		log.Fatal("HOST env. variable is required")
 	}
 
-	EMAIL := os.Getenv("EMAIL")
+	EMAIL := os.Getenv("CLOUDFLARE_EMAIL")
 	if EMAIL == "" {
 		log.Fatal("EMAIL env. variable is required")
 	}
