@@ -20,27 +20,27 @@ var ZONE, HOST string
 func NewProvider() (providers.Provider, error) {
 	APIKEY := os.Getenv("CLOUDFLARE_APIKEY")
 	if APIKEY == "" {
-		log.Fatal("APIKEY env. variable is required")
+		log.Fatal("CLOUDFLARE_APIKEY env. variable is required")
 	}
 
 	ZONE = os.Getenv("CLOUDFLARE_ZONE")
 	if APIKEY == "" {
-		log.Fatal("ZONE env. variable is required")
+		log.Fatal("CLOUDFLARE_ZONE env. variable is required")
 	}
 
 	HOST = os.Getenv("CLOUDFLARE_HOST")
 	if HOST == "" {
-		log.Fatal("HOST env. variable is required")
+		log.Fatal("CLOUDFLARE_HOST env. variable is required")
 	}
 
 	EMAIL := os.Getenv("CLOUDFLARE_EMAIL")
 	if EMAIL == "" {
-		log.Fatal("EMAIL env. variable is required")
+		log.Fatal("CLOUDFLARE_EMAIL env. variable is required")
 	}
 
 	api, err := NewCloudflareClient(APIKEY, EMAIL, ZONE, HOST)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	provider := &Cloudflare{
