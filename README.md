@@ -14,6 +14,17 @@ docker run \
   hugomd/cloudflare-ddns
 ```
 
+Example running as a persistant daemon:
+```
+docker run -d --restart always \
+  -e PROVIDER=cloudflare \
+  -e CLOUDFLARE_APIKEY=YOUR_API_KEY \
+  -e CLOUDFLARE_ZONE=YOUR_ZONE \
+  -e CLOUDFLARE_HOST=YOUR_DOMAIN \
+  -e CLOUDFLARE_EMAIL=YOUR_CLOUDFLARE_EMAIL \
+  -duration 2h
+```
+
 # Supported Providers
 
 | Provider                             | Reference (used for `PROVIDER` environment variable) |
@@ -36,6 +47,10 @@ All providers require the following environment variable:
 | `CLOUDFLARE_ZONE`               | [Cloudflare Zone](https://api.cloudflare.com/#zone-properties)                                                          | `example.com`           | `true`   |
 | `CLOUDFLARE_HOST`               | The record you want to update                                                                                           | `subdomain.example.com` | `true`   |
 | `CLOUDFLARE_EMAIL`              | Email associated with your Cloudflare account                                                                           | `john.doe@example.com`  | `true`   |
+
+| Parameter             | Description                                                                                                                                                                | Example       | Required |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
+| `-duration`           | Runs program perpetually and recheck after specified interval; parses time strings such as `5m`, `15m`, `2h30m5s`. If not specified, or if equal to 0s, run once and exit. | 2h            | `false`  |
 
 # Contributing
 
