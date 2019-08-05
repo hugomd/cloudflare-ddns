@@ -22,7 +22,7 @@ docker run -d --restart always \
   -e CLOUDFLARE_ZONE=YOUR_ZONE \
   -e CLOUDFLARE_HOST=YOUR_DOMAIN \
   -e CLOUDFLARE_EMAIL=YOUR_CLOUDFLARE_EMAIL \
-  -duration 2h
+  hugomd/cloudflare-ddns -duration 2h
 ```
 
 # Supported Providers
