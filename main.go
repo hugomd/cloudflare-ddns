@@ -11,7 +11,7 @@ import (
 )
 
 func checkIP() (string, error) {
-	rsp, err := http.Get("http://checkip.amazonaws.com")
+	rsp, err := http.Get("https://checkip.amazonaws.com")
 	if err != nil {
 		return "", err
 	}
