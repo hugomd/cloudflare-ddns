@@ -7,4 +7,4 @@ RUN cd /go/src/github.com/hugomd/cloudflare-ddns && CGO_ENABLED=0 GOOS=linux go 
 FROM scratch
 COPY --from=build-env /go/src/github.com/hugomd/cloudflare-ddns/main /
 COPY --from=build-env /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-CMD ["/main"]
+ENTRYPOINT ["/main"]
