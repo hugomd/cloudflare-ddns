@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -53,54 +52,6 @@ func NewCloudflareClient(key string, email string, zone string, host string) (*C
 	}
 
 	return &api, nil
-}
-
-func (api *CloudflareAPI) UpdateRecord(ip string) error {
-	zones, err := api.ListZones()
-	if err != nil {
-		panic(err)
-	}
-
-	var zone Zone
-
-	for i := range zones {
-		if zones[i].Name == api.Zone {
-			zone = zones[i]
-		}
-	}
-
-	if zone == (Zone{}) {
-		panic("Zone not found")
-	}
-
-	records, err := api.ListDNSRecords(zone)
-	if err != nil {
-		panic(err)
-	}
-
-	var record Record
-	for i := range records {
-		if records[i].Name == api.Host {
-			record = records[i]
-		}
-	}
-
-	if record == (Record{}) {
-		panic("Host not found")
-	}
-
-	if ip != record.Content {
-		record.Content = ip
-		err = api.UpdateDNSRecord(record, zone)
-		if err != nil {
-			panic(err)
-		}
-		log.Printf("Updated IP to %s", ip)
-	} else {
-		log.Print("No change in IP, not updating record")
-	}
-
-	return nil
 }
 
 func (api *CloudflareAPI) ListZones() ([]Zone, error) {

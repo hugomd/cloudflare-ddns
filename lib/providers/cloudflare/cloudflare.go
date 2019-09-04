@@ -1,6 +1,7 @@
 package cloudflare
 
 import (
+	"errors"
 	"github.com/hugomd/cloudflare-ddns/lib/providers"
 	"log"
 	"os"
@@ -19,27 +20,27 @@ var ZONE, HOST string
 func NewProvider() (providers.Provider, error) {
 	APIKEY := os.Getenv("CLOUDFLARE_APIKEY")
 	if APIKEY == "" {
-		log.Fatal("APIKEY env. variable is required")
+		log.Fatal("CLOUDFLARE_APIKEY env. variable is required")
 	}
 
 	ZONE = os.Getenv("CLOUDFLARE_ZONE")
 	if APIKEY == "" {
-		log.Fatal("ZONE env. variable is required")
+		log.Fatal("CLOUDFLARE_ZONE env. variable is required")
 	}
 
 	HOST = os.Getenv("CLOUDFLARE_HOST")
 	if HOST == "" {
-		log.Fatal("HOST env. variable is required")
+		log.Fatal("CLOUDFLARE_HOST env. variable is required")
 	}
 
 	EMAIL := os.Getenv("CLOUDFLARE_EMAIL")
 	if EMAIL == "" {
-		log.Fatal("EMAIL env. variable is required")
+		log.Fatal("CLOUDFLARE_EMAIL env. variable is required")
 	}
 
 	api, err := NewCloudflareClient(APIKEY, EMAIL, ZONE, HOST)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	provider := &Cloudflare{
@@ -52,7 +53,7 @@ func NewProvider() (providers.Provider, error) {
 func (api *Cloudflare) UpdateRecord(ip string) error {
 	zones, err := api.client.ListZones()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	var zone Zone
@@ -64,12 +65,12 @@ func (api *Cloudflare) UpdateRecord(ip string) error {
 	}
 
 	if zone == (Zone{}) {
-		panic("Zone not found")
+		return errors.New("Zone not found")
 	}
 
 	records, err := api.client.ListDNSRecords(zone)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	var record Record
@@ -80,14 +81,14 @@ func (api *Cloudflare) UpdateRecord(ip string) error {
 	}
 
 	if record == (Record{}) {
-		panic("Host not found")
+		return errors.New("Host not found")
 	}
 
 	if ip != record.Content {
 		record.Content = ip
 		err = api.client.UpdateDNSRecord(record, zone)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		log.Printf("IP changed, updated to %s", ip)
 	} else {
