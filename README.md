@@ -25,11 +25,27 @@ docker run -d --restart always \
   hugomd/cloudflare-ddns -duration 2h
 ```
 
+You can load environment variables through a config file of key/value pairs.
+
+```sh
+echo "PROVIDER=YOUR_PROVIDER" > config.env
+docker run \
+  -v $PWD/config.env:/tmp/config.env \
+  hugomd/cloudflare-ddns -config /tmp/config.env
+```
+
 # Supported Providers
 
 | Provider                             | Reference (used for `PROVIDER` environment variable) |
 |--------------------------------------|------------------------------------------------------|
 | [Cloudflare](https://cloudflare.com) | `cloudflare`                                         |
+
+# CLI
+
+| Parameter             | Description                                                                                                                                                                | Example           | Required |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|----------|
+| `-duration`           | Runs program perpetually and recheck after specified interval; parses time strings such as `5m`, `15m`, `2h30m5s`. If not specified, or if equal to 0s, run once and exit. | 2h                | `false`  |
+| `-config`             | Loads environment variables from a given file. Variables should be specified as lines of `key=value` pairs. No variables will be loaded if a file is not specified.        | `/tmp/config.env` | `false`  |
 
 # Environment Variables
 
@@ -47,10 +63,6 @@ All providers require the following environment variable:
 | `CLOUDFLARE_ZONE`               | [Cloudflare Zone](https://api.cloudflare.com/#zone-properties)                                                          | `example.com`           | `true`   |
 | `CLOUDFLARE_HOST`               | The record you want to update                                                                                           | `subdomain.example.com` | `true`   |
 | `CLOUDFLARE_EMAIL`              | Email associated with your Cloudflare account                                                                           | `john.doe@example.com`  | `true`   |
-
-| Parameter             | Description                                                                                                                                                                | Example       | Required |
-|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
-| `-duration`           | Runs program perpetually and recheck after specified interval; parses time strings such as `5m`, `15m`, `2h30m5s`. If not specified, or if equal to 0s, run once and exit. | 2h            | `false`  |
 
 # Contributing
 
