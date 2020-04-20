@@ -70,7 +70,7 @@ func (api *CloudflareAPI) ListZones() ([]Zone, error) {
 }
 
 func (api *CloudflareAPI) ListDNSRecords(zone Zone) ([]Record, error) {
-	uri := fmt.Sprintf("/zones/%s/dns_records?name=%s", zone.ID, api.Host)
+	uri := fmt.Sprintf("/zones/%s/dns_records?type=A&name=%s", zone.ID, api.Host)
 	resp, err := api.request("GET", uri, nil)
 	if err != nil {
 		return nil, err
