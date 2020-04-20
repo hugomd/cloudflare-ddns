@@ -32,6 +32,7 @@ type Record struct {
 	Type    string `json:"type"`
 	Content string `json:"content"`
 	Name    string `json:"name"`
+	Proxied bool   `json:"proxied"`
 }
 
 type RecordResponse struct {
