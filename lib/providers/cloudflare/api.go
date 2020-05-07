@@ -10,10 +10,9 @@ import (
 )
 
 type CloudflareAPI struct {
-	ZoneID       string
+	ZoneID     string
 	Host       string
-	APIKey     string
-	Email      string
+	APIToken   string
 	BaseURL    string
 	httpClient *http.Client
 }
@@ -30,13 +29,12 @@ type RecordResponse struct {
 	Result []Record `json:"result"`
 }
 
-func NewCloudflareClient(key string, email string, zoneID string, host string) (*CloudflareAPI, error) {
+func NewCloudflareClient(token string, zoneID string, host string) (*CloudflareAPI, error) {
 	api := CloudflareAPI{
-		ZoneID:    zoneID,
-		Host:    host,
-		APIKey:  key,
-		Email:   email,
-		BaseURL: "https://api.cloudflare.com/client/v4",
+		ZoneID:   zoneID,
+		Host:     host,
+		APIToken: token,
+		BaseURL:  "https://api.cloudflare.com/client/v4",
 	}
 
 	if api.httpClient == nil {
@@ -83,8 +81,7 @@ func (api *CloudflareAPI) request(method string, uri string, body io.Reader) ([]
 		return nil, err
 	}
 
-	req.Header.Set("X-Auth-Email", api.Email)
-	req.Header.Set("X-Auth-Key", api.APIKey)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.APIToken))
 
 	resp, err := api.httpClient.Do(req)
 	if err != nil {
