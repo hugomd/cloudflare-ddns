@@ -18,6 +18,17 @@ func init() {
 var ZONEID, HOST string
 
 func NewProvider() (providers.Provider, error) {
+	// Check for use of any deprecated variables first, point to how to update
+	if os.Getenv("CLOUDFLARE_APIKEY") != "" {
+		log.Fatal("Do not use CLOUDFLARE_APIKEY, see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables")
+	}
+	if os.Getenv("CLOUDFLARE_EMAIL") != "" {
+		log.Fatal("Do not use CLOUDFLARE_EMAIL, see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables")
+	}
+	if os.Getenv("CLOUDFLARE_ZONE") != "" {
+		log.Fatal("Do not use CLOUDFLARE_ZONE, see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables")
+	}
+
 	APITOKEN := os.Getenv("CLOUDFLARE_APITOKEN")
 	if APITOKEN == "" {
 		log.Fatal("CLOUDFLARE_APITOKEN env. variable is required")
