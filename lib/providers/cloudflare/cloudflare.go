@@ -15,7 +15,7 @@ func init() {
 	providers.RegisterProvider("cloudflare", NewProvider)
 }
 
-var ZONE, HOST string
+var ZONEID, HOST string
 
 func NewProvider() (providers.Provider, error) {
 	APIKEY := os.Getenv("CLOUDFLARE_APIKEY")
@@ -23,9 +23,9 @@ func NewProvider() (providers.Provider, error) {
 		log.Fatal("CLOUDFLARE_APIKEY env. variable is required")
 	}
 
-	ZONE = os.Getenv("CLOUDFLARE_ZONE")
-	if APIKEY == "" {
-		log.Fatal("CLOUDFLARE_ZONE env. variable is required")
+	ZONEID = os.Getenv("CLOUDFLARE_ZONEID")
+	if ZONEID == "" {
+		log.Fatal("CLOUDFLARE_ZONEID env. variable is required")
 	}
 
 	HOST = os.Getenv("CLOUDFLARE_HOST")
@@ -38,7 +38,7 @@ func NewProvider() (providers.Provider, error) {
 		log.Fatal("CLOUDFLARE_EMAIL env. variable is required")
 	}
 
-	api, err := NewCloudflareClient(APIKEY, EMAIL, ZONE, HOST)
+	api, err := NewCloudflareClient(APIKEY, EMAIL, ZONEID, HOST)
 	if err != nil {
 		return nil, err
 	}
@@ -51,24 +51,7 @@ func NewProvider() (providers.Provider, error) {
 }
 
 func (api *Cloudflare) UpdateRecord(ip string) error {
-	zones, err := api.client.ListZones()
-	if err != nil {
-		return err
-	}
-
-	var zone Zone
-
-	for i := range zones {
-		if zones[i].Name == ZONE {
-			zone = zones[i]
-		}
-	}
-
-	if zone == (Zone{}) {
-		return errors.New("Zone not found")
-	}
-
-	records, err := api.client.ListDNSRecords(zone)
+	records, err := api.client.ListDNSRecords()
 	if err != nil {
 		return err
 	}
@@ -86,7 +69,7 @@ func (api *Cloudflare) UpdateRecord(ip string) error {
 
 	if ip != record.Content {
 		record.Content = ip
-		err = api.client.UpdateDNSRecord(record, zone)
+		err = api.client.UpdateDNSRecord(record)
 		if err != nil {
 			return err
 		}

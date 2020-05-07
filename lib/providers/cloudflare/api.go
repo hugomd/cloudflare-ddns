@@ -10,21 +10,12 @@ import (
 )
 
 type CloudflareAPI struct {
-	Zone       string
+	ZoneID       string
 	Host       string
 	APIKey     string
 	Email      string
 	BaseURL    string
 	httpClient *http.Client
-}
-
-type Zone struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
-type ZoneResponse struct {
-	Result []Zone `json:"result"`
 }
 
 type Record struct {
@@ -39,9 +30,9 @@ type RecordResponse struct {
 	Result []Record `json:"result"`
 }
 
-func NewCloudflareClient(key string, email string, zone string, host string) (*CloudflareAPI, error) {
+func NewCloudflareClient(key string, email string, zoneID string, host string) (*CloudflareAPI, error) {
 	api := CloudflareAPI{
-		Zone:    zone,
+		ZoneID:    zoneID,
 		Host:    host,
 		APIKey:  key,
 		Email:   email,
@@ -55,23 +46,8 @@ func NewCloudflareClient(key string, email string, zone string, host string) (*C
 	return &api, nil
 }
 
-func (api *CloudflareAPI) ListZones() ([]Zone, error) {
-	uri := fmt.Sprintf("/zones?name=%s", api.Zone)
-	resp, err := api.request("GET", uri, nil)
-	if err != nil {
-		return nil, err
-	}
-	var r ZoneResponse
-	err = json.Unmarshal(resp, &r)
-
-	if err != nil {
-		return nil, err
-	}
-	return r.Result, nil
-}
-
-func (api *CloudflareAPI) ListDNSRecords(zone Zone) ([]Record, error) {
-	uri := fmt.Sprintf("/zones/%s/dns_records?type=A&name=%s", zone.ID, api.Host)
+func (api *CloudflareAPI) ListDNSRecords() ([]Record, error) {
+	uri := fmt.Sprintf("/zones/%s/dns_records?type=A&name=%s", api.ZoneID, api.Host)
 	resp, err := api.request("GET", uri, nil)
 	if err != nil {
 		return nil, err
@@ -87,8 +63,8 @@ func (api *CloudflareAPI) ListDNSRecords(zone Zone) ([]Record, error) {
 	return r.Result, nil
 }
 
-func (api *CloudflareAPI) UpdateDNSRecord(record Record, zone Zone) error {
-	uri := fmt.Sprintf("/zones/%s/dns_records/%s", zone.ID, record.ID)
+func (api *CloudflareAPI) UpdateDNSRecord(record Record) error {
+	uri := fmt.Sprintf("/zones/%s/dns_records/%s", api.ZoneID, record.ID)
 
 	payload := new(bytes.Buffer)
 	json.NewEncoder(payload).Encode(record)
