@@ -64,11 +64,13 @@ All providers require the following environment variable:
 | `CLOUDFLARE_EMAIL` **DEPRECATED**  | Email associated with your Cloudflare account                                                                                                              | `john.doe@example.com`  |          |
 | `CLOUDFLARE_APIKEY` **DEPRECATED** | [Cloudflare API key](https://support.cloudflare.com/hc/en-us/articles/200167836-Where-do-I-find-my-Cloudflare-API-key-)                                    | `12345`                 |          |
 
-#### Deprecated Environment Variables
+### Deprecated Environment Variables
 
-Cloudflare now [supports API tokens](https://blog.cloudflare.com/api-tokens-general-availability/) as a more secure way of interacting with their API. Instead of using your global API key/email, you should use a token with limited permissions. When upgrading, you'll need to replace a few existing environment variables.
+Cloudflare now [supports API tokens](https://blog.cloudflare.com/api-tokens-general-availability/) as a more secure way of interacting with their API. Instead of using your global API key/email, you should use a token with limited permissions.
 
-Instead of providing a `CLOUDFLARE_ZONE` with your domain name, you should specify the Zone ID (`CLOUDFLARE_ZONEID`) of your domain name. You can find this in the "Overview" tab for your domain.
+When upgrading, you'll need to replace a few existing environment variables.
+
+Instead of providing a `CLOUDFLARE_ZONE` with your domain name, you should specify the Zone ID (`CLOUDFLARE_ZONEID`) of your domain. You can find this in the "Overview" tab for your domain.
 
 Instead of your `CLOUDFLARE_EMAIL` and `CLOUDFLARE_APIKEY`, you should [generate a token](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345680) (`CLOUDFLARE_APITOKEN`) with permission to edit DNS records for your desired zone.
 
