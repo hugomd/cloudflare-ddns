@@ -1,4 +1,4 @@
-FROM golang:alpine AS build-env
+FROM golang:1.13-alpine AS build-env
 WORKDIR /go/src/github.com/hugomd/cloudflare-ddns/
 RUN apk add ca-certificates
 ADD . /go/src/github.com/hugomd/cloudflare-ddns/

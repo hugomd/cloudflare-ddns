@@ -45,6 +45,7 @@ func NewProvider() (providers.Provider, error) {
 	}
 
 	api, err := NewCloudflareClient(APITOKEN, ZONEID, HOST)
+  
 	if err != nil {
 		return nil, err
 	}

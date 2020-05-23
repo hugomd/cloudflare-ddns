@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-        "flag"
+	"flag"
 	"github.com/hugomd/cloudflare-ddns/lib/providers"
 	_ "github.com/hugomd/cloudflare-ddns/lib/providers/_all"
 	"io/ioutil"
