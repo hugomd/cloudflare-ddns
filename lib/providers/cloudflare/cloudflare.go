@@ -15,17 +15,28 @@ func init() {
 	providers.RegisterProvider("cloudflare", NewProvider)
 }
 
-var ZONE, HOST string
+var ZONEID, HOST string
 
 func NewProvider() (providers.Provider, error) {
-	APIKEY := os.Getenv("CLOUDFLARE_APIKEY")
-	if APIKEY == "" {
-		log.Fatal("CLOUDFLARE_APIKEY env. variable is required")
+	// Check for use of any deprecated variables first, point to how to update
+	if os.Getenv("CLOUDFLARE_APIKEY") != "" {
+		log.Fatal("Do not use CLOUDFLARE_APIKEY, see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables")
+	}
+	if os.Getenv("CLOUDFLARE_EMAIL") != "" {
+		log.Fatal("Do not use CLOUDFLARE_EMAIL, see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables")
+	}
+	if os.Getenv("CLOUDFLARE_ZONE") != "" {
+		log.Fatal("Do not use CLOUDFLARE_ZONE, see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables")
 	}
 
-	ZONE = os.Getenv("CLOUDFLARE_ZONE")
-	if APIKEY == "" {
-		log.Fatal("CLOUDFLARE_ZONE env. variable is required")
+	APITOKEN := os.Getenv("CLOUDFLARE_APITOKEN")
+	if APITOKEN == "" {
+		log.Fatal("CLOUDFLARE_APITOKEN env. variable is required")
+	}
+
+	ZONEID = os.Getenv("CLOUDFLARE_ZONEID")
+	if ZONEID == "" {
+		log.Fatal("CLOUDFLARE_ZONEID env. variable is required")
 	}
 
 	HOST = os.Getenv("CLOUDFLARE_HOST")
@@ -33,17 +44,8 @@ func NewProvider() (providers.Provider, error) {
 		log.Fatal("CLOUDFLARE_HOST env. variable is required")
 	}
 
-	EMAIL := os.Getenv("CLOUDFLARE_EMAIL")
-	if EMAIL == "" {
-		log.Fatal("CLOUDFLARE_EMAIL env. variable is required")
-	}
-
-	// Check for use of any deprecated variables first, point to how to update
-	if os.Getenv("CLOUDFLARE_APIKEY") != "" || os.Getenv("CLOUDFLARE_EMAIL") != "" || os.Getenv("CLOUDFLARE_ZONE") != "" {
-		log.Print("WARNING: CLOUDFLARE_APIKEY, CLOUDFLARE_EMAIL and CLOUDFLARE_ZONE are deprecated environment variables and are unsupported. Please see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables for more information")
-	}
-
-	api, err := NewCloudflareClient(APIKEY, EMAIL, ZONE, HOST)
+	api, err := NewCloudflareClient(APITOKEN, ZONEID, HOST)
+  
 	if err != nil {
 		return nil, err
 	}
@@ -56,24 +58,7 @@ func NewProvider() (providers.Provider, error) {
 }
 
 func (api *Cloudflare) UpdateRecord(ip string) error {
-	zones, err := api.client.ListZones()
-	if err != nil {
-		return err
-	}
-
-	var zone Zone
-
-	for i := range zones {
-		if zones[i].Name == ZONE {
-			zone = zones[i]
-		}
-	}
-
-	if zone == (Zone{}) {
-		return errors.New("Zone not found")
-	}
-
-	records, err := api.client.ListDNSRecords(zone)
+	records, err := api.client.ListDNSRecords()
 	if err != nil {
 		return err
 	}
@@ -91,7 +76,7 @@ func (api *Cloudflare) UpdateRecord(ip string) error {
 
 	if ip != record.Content {
 		record.Content = ip
-		err = api.client.UpdateDNSRecord(record, zone)
+		err = api.client.UpdateDNSRecord(record)
 		if err != nil {
 			return err
 		}
