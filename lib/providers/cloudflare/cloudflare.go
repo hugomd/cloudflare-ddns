@@ -38,6 +38,11 @@ func NewProvider() (providers.Provider, error) {
 		log.Fatal("CLOUDFLARE_EMAIL env. variable is required")
 	}
 
+	// Check for use of any deprecated variables first, point to how to update
+	if os.Getenv("CLOUDFLARE_APIKEY") != "" || os.Getenv("CLOUDFLARE_EMAIL") != "" || os.Getenv("CLOUDFLARE_ZONE") != "" {
+		log.Print("WARNING: CLOUDFLARE_APIKEY, CLOUDFLARE_EMAIL and CLOUDFLARE_ZONE are deprecated environment variables and are unsupported. Please see https://github.com/hugomd/cloudflare-ddns#deprecated-environment-variables for more information")
+	}
+
 	api, err := NewCloudflareClient(APIKEY, EMAIL, ZONE, HOST)
 	if err != nil {
 		return nil, err
