@@ -87,6 +87,7 @@ func (api *CloudflareAPI) request(method string, uri string, body io.Reader) ([]
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		panic("Status code not 200")
