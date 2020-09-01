@@ -24,7 +24,7 @@ jobs:
       - name: Upload to Docker 
         uses: docker/build-push-action@v1
         with:
-          repository: tiemonl/cloudflare-ddns
+          repository: hugomd/cloudflare-ddns
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           tags: latest
