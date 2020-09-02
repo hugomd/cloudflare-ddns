@@ -1,5 +1,7 @@
-on: release
 name: Build binaries
+on: 
+  release:
+    types: [created]
 
 jobs:
   release:
