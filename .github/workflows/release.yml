@@ -4,7 +4,7 @@ on:
     types: [created]
 
 jobs:
-  release:
+  compile:
     name: ${{ matrix.binaries }}
     runs-on: ubuntu-latest
     strategy:
@@ -23,6 +23,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOARCH: ${{ steps.split.outputs._2 }}
           GOOS: ${{ steps.split.outputs._1 }}
+  release:
+    needs: [compile]
+    name: Docker upload
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
       - name: Upload to Docker 
         uses: docker/build-push-action@v1
         with:
@@ -30,4 +36,3 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           tag_with_ref: true
-
