@@ -2,9 +2,10 @@ package cloudflare
 
 import (
 	"errors"
-	"github.com/hugomd/cloudflare-ddns/lib/providers"
 	"log"
 	"os"
+
+	"github.com/hugomd/cloudflare-ddns/lib/providers"
 )
 
 type Cloudflare struct {
@@ -45,7 +46,7 @@ func NewProvider() (providers.Provider, error) {
 	}
 
 	api, err := NewCloudflareClient(APITOKEN, ZONEID, HOST)
-  
+
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +59,38 @@ func NewProvider() (providers.Provider, error) {
 }
 
 func (api *Cloudflare) UpdateRecord(ip string) error {
-	records, err := api.client.ListDNSRecords()
+	records, err := api.client.ListDNSRecords(RecordTypeA)
+	if err != nil {
+		return err
+	}
+
+	var record Record
+	for i := range records {
+		if records[i].Name == HOST {
+			record = records[i]
+		}
+	}
+
+	if record == (Record{}) {
+		return errors.New("Host not found")
+	}
+
+	if ip != record.Content {
+		record.Content = ip
+		err = api.client.UpdateDNSRecord(record)
+		if err != nil {
+			return err
+		}
+		log.Printf("IP changed, updated to %s", ip)
+	} else {
+		log.Print("No change in IP, not updating record")
+	}
+
+	return nil
+}
+
+func (api *Cloudflare) UpdateRecord6(ip string) error {
+	records, err := api.client.ListDNSRecords(RecordTypeAAAA)
 	if err != nil {
 		return err
 	}

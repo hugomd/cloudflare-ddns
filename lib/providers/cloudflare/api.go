@@ -18,12 +18,19 @@ type CloudflareAPI struct {
 }
 
 type Record struct {
-	ID      string `json:"id"`
-	Type    string `json:"type"`
-	Content string `json:"content"`
-	Name    string `json:"name"`
-	Proxied bool   `json:"proxied"`
+	ID      string     `json:"id"`
+	Type    RecordType `json:"type"`
+	Content string     `json:"content"`
+	Name    string     `json:"name"`
+	Proxied bool       `json:"proxied"`
 }
+
+type RecordType = string
+
+const (
+	RecordTypeA    = RecordType("A")
+	RecordTypeAAAA = RecordType("AAAA")
+)
 
 type RecordResponse struct {
 	Result []Record `json:"result"`
@@ -44,8 +51,8 @@ func NewCloudflareClient(token string, zoneID string, host string) (*CloudflareA
 	return &api, nil
 }
 
-func (api *CloudflareAPI) ListDNSRecords() ([]Record, error) {
-	uri := fmt.Sprintf("/zones/%s/dns_records?type=A&name=%s", api.ZoneID, api.Host)
+func (api *CloudflareAPI) ListDNSRecords(recType RecordType) ([]Record, error) {
+	uri := fmt.Sprintf("/zones/%s/dns_records?type=%s&name=%s", api.ZoneID, recType, api.Host)
 	resp, err := api.request("GET", uri, nil)
 	if err != nil {
 		return nil, err
