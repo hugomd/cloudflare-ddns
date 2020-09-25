@@ -90,7 +90,8 @@ func (api *CloudflareAPI) request(method string, uri string, body io.Reader) ([]
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		panic("Status code not 200")
+		respBody, _ := ioutil.ReadAll(resp.Body)
+		return nil, fmt.Errorf("Status code not 200 but %v, body: %v", err, string(respBody))
 	}
 
 	respBody, err := ioutil.ReadAll(resp.Body)
