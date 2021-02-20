@@ -44,8 +44,25 @@ func NewCloudflareClient(token string, zoneID string, host string) (*CloudflareA
 	return &api, nil
 }
 
-func (api *CloudflareAPI) ListDNSRecords() ([]Record, error) {
+func (api *CloudflareAPI) ListDNSARecords() ([]Record, error) {
 	uri := fmt.Sprintf("/zones/%s/dns_records?type=A&name=%s", api.ZoneID, api.Host)
+	resp, err := api.request("GET", uri, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var r *RecordResponse
+	err = json.Unmarshal(resp, &r)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Result, nil
+}
+
+func (api *CloudflareAPI) ListDNSAAAARecords() ([]Record, error) {
+	uri := fmt.Sprintf("/zones/%s/dns_records?type=AAAA&name=%s", api.ZoneID, api.Host)
 	resp, err := api.request("GET", uri, nil)
 	if err != nil {
 		return nil, err

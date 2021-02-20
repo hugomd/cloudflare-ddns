@@ -13,19 +13,46 @@ import (
 	"time"
 )
 
-func checkIP() (string, error) {
-	rsp, err := http.Get("https://checkip.amazonaws.com")
-	if err != nil {
-		return "", err
-	}
-	defer rsp.Body.Close()
+func checkIP() (string, string) {
 
-	buf, err := ioutil.ReadAll(rsp.Body)
+    var ipv4 string
+    var ipv6 string
+
+	rsp, err := http.Get("https://ipv4.wtfismyip.com/text")
 	if err != nil {
-		return "", err
+        log.Println("ipv4 get failed: ", err)
 	}
 
-	return string(bytes.TrimSpace(buf)), nil
+    if rsp != nil {
+        buf, err := ioutil.ReadAll(rsp.Body)
+        if err != nil {
+            log.Println("ipv4 read failed: ", err)
+        }
+        rsp.Body.Close()
+
+        if buf != nil {
+            ipv4 = string(bytes.TrimSpace(buf))
+        }
+    }
+
+	rsp, err = http.Get("https://ipv6.wtfismyip.com/text")
+	if err != nil {
+        log.Println("ipv6 get failed: ", err)
+	}
+
+    if (rsp != nil) {
+        buf, err := ioutil.ReadAll(rsp.Body)
+        if err != nil {
+            log.Println("ipv6 read failed: ", err)
+        }
+        rsp.Body.Close()
+
+        if buf != nil {
+            ipv6 = string(bytes.TrimSpace(buf))
+        }
+    }
+
+    return ipv4, ipv6
 }
 
 func setEnvVarsFromConfig(filename *string) error {
@@ -90,13 +117,13 @@ func runddns() {
 		panic(err)
 	}
 
-	ip, err := checkIP()
-	if err != nil {
-		panic(err)
+	ipv4, ipv6 := checkIP()
+	if ipv4 == "" && ipv6 == "" {
+		panic("cant get ipv4 or ipv6 addresses")
 	}
-	log.Printf("IP is %s", ip)
+	log.Printf("IPv4 is %s and IPv6 is %s", ipv4, ipv6)
 
-	err = provider.UpdateRecord(ip)
+	err = provider.UpdateRecord(ipv4, ipv6)
 	if err != nil {
 		panic(err)
 	}

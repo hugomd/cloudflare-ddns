@@ -1,7 +1,7 @@
 package providers
 
 type Provider interface {
-	UpdateRecord(ip string) error
+	UpdateRecord(ipv4 string, ipv6 string) error
 }
 
 type ProviderInit func() (Provider, error)

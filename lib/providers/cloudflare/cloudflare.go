@@ -45,7 +45,7 @@ func NewProvider() (providers.Provider, error) {
 	}
 
 	api, err := NewCloudflareClient(APITOKEN, ZONEID, HOST)
-  
+
 	if err != nil {
 		return nil, err
 	}
@@ -57,32 +57,56 @@ func NewProvider() (providers.Provider, error) {
 	return provider, nil
 }
 
-func (api *Cloudflare) UpdateRecord(ip string) error {
-	records, err := api.client.ListDNSRecords()
+func (api *Cloudflare) UpdateRecord(ipv4 string, ipv6 string) error {
+	records, err := api.client.ListDNSARecords()
 	if err != nil {
 		return err
 	}
 
-	var record Record
+    if (ipv6 != "") {
+        a4records, err := api.client.ListDNSAAAARecords()
+        if err != nil {
+            log.Println("cant get AAAA records from Cloudflare ", err)
+        }
+        records = append(records, a4records...)
+    }
+
+	var arecord Record
+    var a4record Record
+
 	for i := range records {
-		if records[i].Name == HOST {
-			record = records[i]
+		if records[i].Name == HOST && records[i].Type == "A" {
+			arecord = records[i]
 		}
+        if records[i].Name == HOST && records[i].Type == "AAAA" {
+            a4record = records[i]
+        }
 	}
 
-	if record == (Record{}) {
+	if arecord == (Record{}) && a4record == (Record{}) {
 		return errors.New("Host not found")
 	}
 
-	if ip != record.Content {
-		record.Content = ip
-		err = api.client.UpdateDNSRecord(record)
+	if ipv4 != arecord.Content {
+		arecord.Content = ipv4
+		err = api.client.UpdateDNSRecord(arecord)
 		if err != nil {
 			return err
 		}
-		log.Printf("IP changed, updated to %s", ip)
+		log.Printf("IPv4 changed, updated to %s", ipv4)
 	} else {
-		log.Print("No change in IP, not updating record")
+		log.Print("No change in IPv4, not updating A record")
+	}
+
+	if ipv6 != "" && ipv6 != arecord.Content {
+		a4record.Content = ipv6
+		err = api.client.UpdateDNSRecord(a4record)
+		if err != nil {
+			return err
+		}
+		log.Printf("IPv6 changed, updated to %s", ipv6)
+	} else {
+		log.Print("No change in IPv6, not updating AAAA record")
 	}
 
 	return nil
