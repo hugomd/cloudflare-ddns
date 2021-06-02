@@ -10,7 +10,7 @@ docker run \
   -e CLOUDFLARE_APITOKEN=YOUR_API_TOKEN \
   -e CLOUDFLARE_ZONEID=YOUR_ZONE_ID \
   -e CLOUDFLARE_HOST=YOUR_DOMAIN \
-  hugomd/cloudflare-ddns:2.0.0
+  hugomd/cloudflare-ddns:2.1.0
 ```
 
 Example running as a persistant daemon:
@@ -20,7 +20,7 @@ docker run -d --restart always \
   -e CLOUDFLARE_APITOKEN=YOUR_API_TOKEN \
   -e CLOUDFLARE_ZONEID=YOUR_ZONE_ID \
   -e CLOUDFLARE_HOST=YOUR_DOMAIN \
-  hugomd/cloudflare-ddns:2.0.0 -duration 2h
+  hugomd/cloudflare-ddns:2.1.0 -duration 2h
 ```
 
 You can load environment variables through a config file of key/value pairs.
