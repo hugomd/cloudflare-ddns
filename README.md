@@ -62,9 +62,6 @@ All providers require the following environment variable:
 | `CLOUDFLARE_APITOKEN`              | An [API Token](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys), with permission to edit DNS records for your zone | `12345`                 | `true`   |
 | `CLOUDFLARE_ZONEID`                | The Zone ID of your domain in Cloudflare (you can find this in the "Overview" tab at the bottom of the page)                                               | `dd255baaaaad2e8...`    | `true`   |
 | `CLOUDFLARE_HOST`                  | The record you want to update                                                                                                                              | `subdomain.example.com` | `true`   |
-| `CLOUDFLARE_ZONE` **DEPRECATED**   | [Cloudflare Zone](https://api.cloudflare.com/#zone-properties)                                                                                             | `example.com`           |          |
-| `CLOUDFLARE_EMAIL` **DEPRECATED**  | Email associated with your Cloudflare account                                                                                                              | `john.doe@example.com`  |          |
-| `CLOUDFLARE_APIKEY` **DEPRECATED** | [Cloudflare API key](https://support.cloudflare.com/hc/en-us/articles/200167836-Where-do-I-find-my-Cloudflare-API-key-)                                    | `12345`                 |          |
 
 ### Deprecated Environment Variables
 
