@@ -46,6 +46,9 @@ docker run \
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------|----------|
 | `-duration`           | Runs program perpetually and recheck after specified interval; parses time strings such as `5m`, `15m`, `2h30m5s`. If not specified, or if equal to 0s, run once and exit. | 2h                | `false`  |
 | `-config`             | Loads environment variables from a given file. Variables should be specified as lines of `key=value` pairs. No variables will be loaded if a file is not specified.        | `/tmp/config.env` | `false`  |
+| `-ipv4`             | Enable updates for IPv4 records. Default is `true`        | `false` | `false`  |
+| `-ipv6`             | Enable updates for IPv6 records. Default is `false`        | `true` | `false`  |
+
 
 # Environment Variables
 
